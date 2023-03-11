@@ -200,7 +200,7 @@ http_template="$white
     # speed, originally bytes per second
     if [[ "${HTTPSTAT_SHOW_SPEED}" == true ]]; then
         printf "Download Speed: %.2f KiB/s, Upload Speed: %.2f KiB/s\n" \
-            $([ -n "${speed_download}" -a "${speed_download}" != "0" ] && echo "scale=2;${speed_download}/1024/1024"|bc)
+            $([ -n "${speed_download}" -a "${speed_download}" != "0" ] && echo "scale=2;${speed_download}/1024/1024"|bc) \
             $([ -n "${speed_upload}" -a "${speed_upload}" != "0" ] && echo "scale=2;${speed_upload}/1024/1024"|bc)
     fi
 }
