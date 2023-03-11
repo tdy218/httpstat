@@ -13,6 +13,7 @@ Options:
   -h --help     show this screen.
   --version     show version.
 Environments:
+  HTTPSTAT_SHOW_HEADER  By default httpstat will show the request header, set to `false` to close it.
   HTTPSTAT_SHOW_BODY    By default httpstat will write response body
                         in a tempfile, but you can let it print out by setting
                         this variable to `true`.
@@ -177,13 +178,14 @@ http_template="$white
 # shellcheck disable=SC2059,SC2002
 {
     # Print header
-    cat "$head" \
-        | perl -pe 's/^(HTTP)(.*)$/'"$green"'$1'"$reset""$cyan"'$2'"$reset"'/g' \
-        | perl -pe 's/^(.*?): (.*)$/'"$white"'$1: '"$cyan"'$2/g'
-    printf "$reset"
+    if [[ "${HTTPSTAT_SHOW_HEADER}" == false ]]; then
+       printf "${green}Header${reset} stored in: $head\n"
+    else
+       cat "$head"; printf '\n'
+    fi
 
     # Print body
-    if [[ "$HTTPSTAT_SHOW_BODY" == true ]]; then
+    if [[ "${HTTPSTAT_SHOW_BODY}" == true ]]; then
         cat "$body"; printf '\n'
     else
         printf "${green}Body${reset} stored in: $body\n"
@@ -196,7 +198,7 @@ http_template="$white
     fi
 
     # speed, originally bytes per second
-    if [[ "$HTTPSTAT_SHOW_SPEED" == true ]]; then
+    if [[ "${HTTPSTAT_SHOW_SPEED}" == true ]]; then
         printf "speed_download %.1f KiB, speed_upload %.1f KiB\n" \
             "$(calc "$speed_download" / 1024)" \
             "$(calc "$speed_upload" / 1024)"
